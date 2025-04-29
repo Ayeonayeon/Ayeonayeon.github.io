@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>PUA 한글 조합 입력기3</title>
+  <title>PUA 한글 조합 입력기 - 위치조절</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -29,37 +29,62 @@
 
     #output {
       border: 1px solid #ccc;
-      padding: 10px;
-      min-height: 50px;
-      font-size: 36px;
+      padding: 20px;
+      min-height: 80px;
+      font-size: 48px;
+      position: relative;
+      font-family: 'mememe3', sans-serif;
+    }
+
+    .syllable {
+      display: inline-block;
+      position: relative;
+      width: 60px;
+      height: 70px;
+      margin-right: 8px;
+    }
+
+    .base {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .top {
+      position: absolute;
+      top: 0;
+      left: 10px;
+    }
+
+    .bottom {
+      position: absolute;
+      bottom: -20px;
+      left: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기3</h1>
+  <h1>PUA 한글 조합 입력기</h1>
 
   <h3>자음</h3>
   <div class="keyboard" id="jaum">
-    <button onclick="addChar('\ue000')">ㄱ</button>
-    <button onclick="addChar('\ue001')">ㄲ</button>
-    <button onclick="addChar('\ue002')">ㄴ</button>
-    <!-- ... 나머지 자음 -->
+    <button onclick="addChar('\ue000', 'base')">ㄱ</button>
+    <button onclick="addChar('\ue001', 'base')">ㄲ</button>
+    <button onclick="addChar('\ue002', 'base')">ㄴ</button>
   </div>
 
   <h3>모음</h3>
   <div class="keyboard" id="moum">
-    <button onclick="addChar('\ue020')">ㅏ</button>
-    <button onclick="addChar('\ue021')">ㅐ</button>
-    <button onclick="addChar('\ue022')">ㅑ</button>
-    <!-- ... 나머지 모음 -->
+    <button onclick="addChar('\ue020', 'top')">ㅏ</button>
+    <button onclick="addChar('\ue021', 'top')">ㅐ</button>
+    <button onclick="addChar('\ue022', 'top')">ㅑ</button>
   </div>
 
   <h3>받침</h3>
   <div class="keyboard" id="batchim">
-    <button onclick="addChar('\ue040')">ㄱ</button>
-    <button onclick="addChar('\ue041')">ㄲ</button>
-    <button onclick="addChar('\ue042')">ㄳ</button>
-    <!-- ... 나머지 받침 -->
+    <button onclick="addChar('\ue040', 'bottom')">ㄱ</button>
+    <button onclick="addChar('\ue041', 'bottom')">ㄲ</button>
+    <button onclick="addChar('\ue042', 'bottom')">ㄳ</button>
   </div>
 
   <div style="margin-top: 20px;">
@@ -67,35 +92,64 @@
     <button onclick="backspace()">← 지우기</button>
   </div>
 
-  <div id="output" contenteditable="false"></div>
+  <div id="output"></div>
 
   <script>
-    let syllableBuffer = '';
-    let fullText = '';
+    let currentSyllable = { base: '', top: '', bottom: '' };
+    let committed = [];
 
-    function addChar(char) {
-      syllableBuffer += char;
+    function addChar(char, role) {
+      currentSyllable[role] = char;
       render();
     }
 
     function commitSyllable() {
-      fullText += syllableBuffer;
-      syllableBuffer = '';
+      committed.push({ ...currentSyllable });
+      currentSyllable = { base: '', top: '', bottom: '' };
       render();
     }
 
     function backspace() {
-      if (syllableBuffer.length > 0) {
-        syllableBuffer = syllableBuffer.slice(0, -1);
-      } else {
-        fullText = fullText.slice(0, -1);
-      }
+      if (currentSyllable.bottom) currentSyllable.bottom = '';
+      else if (currentSyllable.top) currentSyllable.top = '';
+      else if (currentSyllable.base) currentSyllable.base = '';
+      else committed.pop();
       render();
     }
 
     function render() {
-      document.getElementById('output').innerText = fullText + syllableBuffer;
+      const output = document.getElementById('output');
+      output.innerHTML = '';
+
+      [...committed, currentSyllable].forEach(syl => {
+        if (!syl.base) return; // 최소 base는 있어야 보이게 함
+
+        const container = document.createElement('span');
+        container.className = 'syllable';
+
+        const base = document.createElement('span');
+        base.className = 'base';
+        base.textContent = syl.base;
+        container.appendChild(base);
+
+        if (syl.top) {
+          const top = document.createElement('span');
+          top.className = 'top';
+          top.textContent = syl.top;
+          container.appendChild(top);
+        }
+
+        if (syl.bottom) {
+          const bottom = document.createElement('span');
+          bottom.className = 'bottom';
+          bottom.textContent = syl.bottom;
+          container.appendChild(bottom);
+        }
+
+        output.appendChild(container);
+      });
     }
   </script>
 </body>
 </html>
+
