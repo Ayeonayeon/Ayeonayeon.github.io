@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>PUA 한글 조합 입력기 - 위치조정</title>
+  <title>PUA 한글 조합 입력기</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -29,74 +29,70 @@
 
     #output {
       border: 1px solid #ccc;
-      padding: 20px;
-      min-height: 140px;
+      padding: 40px;
+      min-height: 200px;
       font-size: 64px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      font-family: 'mememe3', sans-serif;
     }
 
     .syllable {
       display: inline-block;
       position: relative;
       width: 80px;
-      height: 100px;
+      height: 140px;
       margin: 10px;
     }
 
     .base {
       position: absolute;
-      top: 30px;
-      left: 0;
-      right: 0;
-      text-align: center;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     .top {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      text-align: center;
+      bottom: 100%;
+      left: 50%;
+      transform: translate(-50%, 0%);
     }
 
     .bottom {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      text-align: center;
+      top: 100%;
+      left: 50%;
+      transform: translate(-50%, 0%);
     }
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기11</h1>
+  <h1>PUA 한글 조합 입력기</h1>
 
   <h3>자음</h3>
   <div class="keyboard" id="jaum">
-    <button onclick="addChar('\ue000', 'base')">ㄱ</button>
-    <button onclick="addChar('\ue001', 'base')">ㄲ</button>
-    <button onclick="addChar('\ue002', 'base')">ㄴ</button>
-    <!-- 필요시 더 추가 -->
+    <button onclick="setBase('\ue000')">ㄱ</button>
+    <button onclick="setBase('\ue001')">ㄲ</button>
+    <button onclick="setBase('\ue002')">ㄴ</button>
+    <!-- ... 추가 자음 -->
   </div>
 
   <h3>모음</h3>
   <div class="keyboard" id="moum">
-    <button onclick="addChar('\ue020', 'top')">ㅏ</button>
-    <button onclick="addChar('\ue021', 'top')">ㅐ</button>
-    <button onclick="addChar('\ue022', 'top')">ㅑ</button>
-    <!-- 필요시 더 추가 -->
+    <button onclick="setTop('\ue020')">ㅏ</button>
+    <button onclick="setTop('\ue021')">ㅐ</button>
+    <button onclick="setTop('\ue022')">ㅑ</button>
+    <!-- ... 추가 모음 -->
   </div>
 
   <h3>받침</h3>
   <div class="keyboard" id="batchim">
-    <button onclick="addChar('\ue040', 'bottom')">ㄱ</button>
-    <button onclick="addChar('\ue041', 'bottom')">ㄲ</button>
-    <button onclick="addChar('\ue042', 'bottom')">ㄳ</button>
-    <!-- 필요시 더 추가 -->
+    <button onclick="setBottom('\ue040')">ㄱ</button>
+    <button onclick="setBottom('\ue041')">ㄲ</button>
+    <button onclick="setBottom('\ue042')">ㄳ</button>
+    <!-- ... 추가 받침 -->
   </div>
 
   <div style="margin-top: 20px;">
@@ -107,25 +103,40 @@
   <div id="output"></div>
 
   <script>
-    let currentSyllable = { base: '', top: '', bottom: '' };
-    let committed = [];
+    let current = { base: '', top: '', bottom: '' };
+    let syllables = [];
 
-    function addChar(char, role) {
-      currentSyllable[role] = char;
+    function setBase(c) {
+      current.base = c;
+      render();
+    }
+
+    function setTop(c) {
+      current.top = c;
+      render();
+    }
+
+    function setBottom(c) {
+      current.bottom = c;
       render();
     }
 
     function commitSyllable() {
-      committed.push({ ...currentSyllable });
-      currentSyllable = { base: '', top: '', bottom: '' };
+      syllables.push({ ...current });
+      current = { base: '', top: '', bottom: '' };
       render();
     }
 
     function backspace() {
-      if (currentSyllable.bottom) currentSyllable.bottom = '';
-      else if (currentSyllable.top) currentSyllable.top = '';
-      else if (currentSyllable.base) currentSyllable.base = '';
-      else committed.pop();
+      if (current.bottom) {
+        current.bottom = '';
+      } else if (current.top) {
+        current.top = '';
+      } else if (current.base) {
+        current.base = '';
+      } else {
+        syllables.pop();
+      }
       render();
     }
 
@@ -133,33 +144,33 @@
       const output = document.getElementById('output');
       output.innerHTML = '';
 
-      [...committed, currentSyllable].forEach(syl => {
-        if (!syl.base) return; // base 없으면 안 보여줌
+      for (const s of [...syllables, current]) {
+        if (!s.base) continue;
 
-        const container = document.createElement('span');
-        container.className = 'syllable';
+        const span = document.createElement('span');
+        span.className = 'syllable';
 
-        const base = document.createElement('span');
+        const base = document.createElement('div');
         base.className = 'base';
-        base.textContent = syl.base;
-        container.appendChild(base);
+        base.innerText = s.base;
+        span.appendChild(base);
 
-        if (syl.top) {
-          const top = document.createElement('span');
+        if (s.top) {
+          const top = document.createElement('div');
           top.className = 'top';
-          top.textContent = syl.top;
-          container.appendChild(top);
+          top.innerText = s.top;
+          span.appendChild(top);
         }
 
-        if (syl.bottom) {
-          const bottom = document.createElement('span');
+        if (s.bottom) {
+          const bottom = document.createElement('div');
           bottom.className = 'bottom';
-          bottom.textContent = syl.bottom;
-          container.appendChild(bottom);
+          bottom.innerText = s.bottom;
+          span.appendChild(bottom);
         }
 
-        output.appendChild(container);
-      });
+        output.appendChild(span);
+      }
     }
   </script>
 </body>
