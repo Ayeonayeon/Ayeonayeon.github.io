@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>PUA 한글 조합 입력기 - 위치조절</title>
+  <title>PUA 한글 조합 입력기 - 위치조정</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -30,47 +30,57 @@
     #output {
       border: 1px solid #ccc;
       padding: 20px;
-      min-height: 80px;
-      font-size: 48px;
-      position: relative;
+      min-height: 140px;
+      font-size: 64px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
       font-family: 'mememe3', sans-serif;
     }
 
     .syllable {
       display: inline-block;
       position: relative;
-      width: 60px;
-      height: 70px;
-      margin-right: 8px;
+      width: 80px;
+      height: 100px;
+      margin: 10px;
     }
 
     .base {
       position: absolute;
-      bottom: 0;
+      top: 30px;
       left: 0;
+      right: 0;
+      text-align: center;
     }
 
     .top {
       position: absolute;
       top: 0;
-      left: 10px;
+      left: 0;
+      right: 0;
+      text-align: center;
     }
 
     .bottom {
       position: absolute;
-      bottom: -20px;
-      left: 10px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기</h1>
+  <h1>PUA 한글 조합 입력기11</h1>
 
   <h3>자음</h3>
   <div class="keyboard" id="jaum">
     <button onclick="addChar('\ue000', 'base')">ㄱ</button>
     <button onclick="addChar('\ue001', 'base')">ㄲ</button>
     <button onclick="addChar('\ue002', 'base')">ㄴ</button>
+    <!-- 필요시 더 추가 -->
   </div>
 
   <h3>모음</h3>
@@ -78,6 +88,7 @@
     <button onclick="addChar('\ue020', 'top')">ㅏ</button>
     <button onclick="addChar('\ue021', 'top')">ㅐ</button>
     <button onclick="addChar('\ue022', 'top')">ㅑ</button>
+    <!-- 필요시 더 추가 -->
   </div>
 
   <h3>받침</h3>
@@ -85,6 +96,7 @@
     <button onclick="addChar('\ue040', 'bottom')">ㄱ</button>
     <button onclick="addChar('\ue041', 'bottom')">ㄲ</button>
     <button onclick="addChar('\ue042', 'bottom')">ㄳ</button>
+    <!-- 필요시 더 추가 -->
   </div>
 
   <div style="margin-top: 20px;">
@@ -122,7 +134,7 @@
       output.innerHTML = '';
 
       [...committed, currentSyllable].forEach(syl => {
-        if (!syl.base) return; // 최소 base는 있어야 보이게 함
+        if (!syl.base) return; // base 없으면 안 보여줌
 
         const container = document.createElement('span');
         container.className = 'syllable';
@@ -152,4 +164,3 @@
   </script>
 </body>
 </html>
-
