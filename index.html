@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUA 한글 조합 입력기1.2</title>
+  <title>PUA 한글 조합 입력기1.3</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -80,7 +80,7 @@
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기1.2</h1>
+  <h1>PUA 한글 조합 입력기1.3</h1>
 
   <input type="text" id="nativeInput" placeholder="한글, 영어, 기호 등을 입력하세요" oninput="convertInput()">
 
@@ -115,40 +115,40 @@
 
     let syllables = [];
 
-    // copyForKakao 함수 추가
-function copyForKakao() {
+    function copyForKakao() {
   const MAX_COL = 6;
-  const blank = '\u2800'; // 점자 빈 문자
-  const lines = [[], [], []]; // [jung, cho, jong]
-  let buffer = [];
+  const blank = '\uE090'; // 크기가 맞는 PUA 영역의 빈 문자
+  const blocks = []; // 전체 블록 (3줄씩)
+
+  let lines = [[], [], []]; // [jung, cho, jong]
+  let count = 0;
 
   for (const s of syllables) {
     if (s.raw) {
-      // 영어/기호/공백 등은 같은 위치에 세 줄로 빈칸 채움
-      for (let i = 0; i < 3; i++) lines[i].push(blank);
-      continue;
+      // 특수문자나 영어는 가운데 줄(cho 줄)에 표시
+      lines[0].push(blank);
+      lines[1].push(s.raw);
+      lines[2].push(blank);
+    } else {
+      lines[0].push(s.jung || blank);
+      lines[1].push(s.cho || blank);
+      lines[2].push(s.jong || blank);
     }
 
-    lines[0].push(s.jung || blank);
-    lines[1].push(s.cho || blank);
-    lines[2].push(s.jong || blank);
+    count++;
 
-    if (lines[0].length === MAX_COL) {
-      buffer.push(lines.map(line => line.join('')).join('\n'));
-      lines[0] = [];
-      lines[1] = [];
-      lines[2] = [];
+    if (count % MAX_COL === 0) {
+      blocks.push(lines.map(line => line.join('')).join('\n'));
+      lines = [[], [], []];
     }
   }
 
-  // 남은 글자들 처리
   if (lines[0].length > 0) {
-    buffer.push(lines.map(line => line.join('')).join('\n'));
+    blocks.push(lines.map(line => line.join('')).join('\n'));
   }
 
-  const finalText = buffer.join('\n');
+  const finalText = blocks.join('\n');
 
-  // 클립보드에 복사
   navigator.clipboard.writeText(finalText).then(() => {
     alert("카카오톡용 형식이 복사되었습니다!");
   }).catch(err => {
