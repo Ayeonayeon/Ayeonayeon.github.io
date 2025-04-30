@@ -117,15 +117,20 @@
 
     function copyForKakao() {
   const MAX_COL = 6;
-  const blank = '\uE090'; // 크기가 맞는 PUA 영역의 빈 문자
-  const blocks = []; // 전체 블록 (3줄씩)
+  const blank = '\uE090'; // 크기 맞는 PUA 빈 문자
+  const blocks = [];
 
-  let lines = [[], [], []]; // [jung, cho, jong]
+  let lines = [[], [], []];
   let count = 0;
 
   for (const s of syllables) {
-    if (s.raw) {
-      // 특수문자나 영어는 가운데 줄(cho 줄)에 표시
+    if (s.raw === ' ') {
+      // 띄어쓰기: 세 줄 모두 blank로
+      lines[0].push(blank);
+      lines[1].push(blank);
+      lines[2].push(blank);
+    } else if (s.raw) {
+      // 일반 문자: 자음 줄에만 표시
       lines[0].push(blank);
       lines[1].push(s.raw);
       lines[2].push(blank);
@@ -143,6 +148,7 @@
     }
   }
 
+  // 남은 문자들 추가
   if (lines[0].length > 0) {
     blocks.push(lines.map(line => line.join('')).join('\n'));
   }
@@ -155,6 +161,7 @@
     alert("복사 실패: " + err);
   });
 }
+
 
 
     function convertInput() {
