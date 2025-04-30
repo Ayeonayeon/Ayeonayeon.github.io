@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>PUA 한글 조합 입력기3</title>
+  <title>PUA 한글 조합 입력기4</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -40,33 +40,33 @@
     }
 
     .syllable {
-      position: relative;
-      width: 80px;
-      height: 100px;
-      display: inline-block;
-    }
+  position: relative;
+  width: 80px;
+  height: 100px;
+  display: inline-block;
+}
 
-    .syllable .char {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
+.syllable .char {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-    .syllable .cho {
-      top: 35%;
-    }
+.syllable .cho {
+  top: 50%; /* 자음은 중앙 */
+}
 
-    .syllable .jung {
-      top: 0%;
-    }
+.syllable .jung {
+  top: 20%; /* 모음은 위쪽 */
+}
 
-    .syllable .jong {
-      bottom: 0%;
-    }
+.syllable .jong {
+  top: 80%; /* 받침은 아래쪽 */
+}
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기3</h1>
+  <h1>PUA 한글 조합 입력기4</h1>
 
   <h3>자음</h3>
   <div class="keyboard" id="jaum">
