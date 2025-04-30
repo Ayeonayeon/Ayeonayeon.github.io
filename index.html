@@ -48,11 +48,18 @@
     }
 
     .syllable .cho {
-      top: 50%;
-      left: 26%;
-      transform: translate(-50%, -50%);
-    }
+  top: 50%;
+  left: 26%;
+  transform: translate(-50%, -50%);
+}
 
+/* 모바일 화면일 경우 (최대 너비 768px 이하) */
+@media (max-width: 768px) {
+  .syllable .cho {
+    top: 50%
+    left: 0%;
+  }
+}
     .syllable .jung {
       top: 20%;
     }
