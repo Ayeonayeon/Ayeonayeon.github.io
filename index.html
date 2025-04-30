@@ -84,6 +84,10 @@
 
   <input type="text" id="nativeInput" placeholder="한글, 영어, 기호 등을 입력하세요" oninput="convertInput()">
 
+  <!-- 복사 버튼 추가 -->
+  <button onclick="copyForKakao()">카카오톡용 복사</button>
+
+
   <div id="output" contenteditable="false"></div>
 
   <script>
@@ -110,6 +114,48 @@
     };
 
     let syllables = [];
+
+    // copyForKakao 함수 추가
+function copyForKakao() {
+  const MAX_COL = 6;
+  const blank = '\u2800'; // 점자 빈 문자
+  const lines = [[], [], []]; // [jung, cho, jong]
+  let buffer = [];
+
+  for (const s of syllables) {
+    if (s.raw) {
+      // 영어/기호/공백 등은 같은 위치에 세 줄로 빈칸 채움
+      for (let i = 0; i < 3; i++) lines[i].push(blank);
+      continue;
+    }
+
+    lines[0].push(s.jung || blank);
+    lines[1].push(s.cho || blank);
+    lines[2].push(s.jong || blank);
+
+    if (lines[0].length === MAX_COL) {
+      buffer.push(lines.map(line => line.join('')).join('\n'));
+      lines[0] = [];
+      lines[1] = [];
+      lines[2] = [];
+    }
+  }
+
+  // 남은 글자들 처리
+  if (lines[0].length > 0) {
+    buffer.push(lines.map(line => line.join('')).join('\n'));
+  }
+
+  const finalText = buffer.join('\n');
+
+  // 클립보드에 복사
+  navigator.clipboard.writeText(finalText).then(() => {
+    alert("카카오톡용 형식이 복사되었습니다!");
+  }).catch(err => {
+    alert("복사 실패: " + err);
+  });
+}
+
 
     function convertInput() {
       const input = document.getElementById('nativeInput').value;
