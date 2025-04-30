@@ -132,9 +132,30 @@
       render();
     }
 
-    function render() {
-      // 임시 미리보기는 생략, 최종 입력만 표시
-    }
+function render() {
+  const output = document.getElementById('output');
+
+  // 완성된 글자는 유지
+  const committed = Array.from(output.querySelectorAll('.syllable'));
+  output.innerHTML = '';
+  committed.forEach(node => output.appendChild(node));
+
+  // 현재 입력 중인 버퍼 표시
+  if (syllableBuffer.length > 0) {
+    const preview = document.createElement('div');
+    preview.className = 'syllable';
+
+    syllableBuffer.forEach(item => {
+      const span = document.createElement('span');
+      span.className = item.type;
+      span.innerText = item.char;
+      preview.appendChild(span);
+    });
+
+    output.appendChild(preview);
+  }
+}
+
   </script>
 </body>
 </html>
