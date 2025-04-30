@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>PUA 한글 조합 입력기2</title>
+  <title>PUA 한글 조합 입력기3</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -29,65 +29,67 @@
 
     #output {
       border: 1px solid #ccc;
-      padding: 10px;
-      min-height: 120px;
+      padding: 20px;
+      min-height: 150px;
       font-size: 36px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 20px;
       align-items: center;
+      justify-content: start;
     }
 
     .syllable {
       position: relative;
       width: 80px;
       height: 100px;
+      display: inline-block;
     }
 
-    .syllable span {
+    .syllable .char {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
     }
 
-    .jaum {
-      top: 40px;
+    .syllable .cho {
+      top: 35%;
     }
 
-    .moum {
-      top: 0px;
+    .syllable .jung {
+      top: 0%;
     }
 
-    .batchim {
-      top: 70px;
+    .syllable .jong {
+      bottom: 0%;
     }
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기</h1>
+  <h1>PUA 한글 조합 입력기3</h1>
 
   <h3>자음</h3>
   <div class="keyboard" id="jaum">
-    <button onclick="addChar('\ue000', 'jaum')">ㄱ</button>
-    <button onclick="addChar('\ue001', 'jaum')">ㄲ</button>
-    <button onclick="addChar('\ue002', 'jaum')">ㄴ</button>
-    <!-- ... -->
+    <button onclick="addChar('\ue000', 'cho')">ㄱ</button>
+    <button onclick="addChar('\ue001', 'cho')">ㄲ</button>
+    <button onclick="addChar('\ue002', 'cho')">ㄴ</button>
+    <!-- 나머지 자음 -->
   </div>
 
   <h3>모음</h3>
   <div class="keyboard" id="moum">
-    <button onclick="addChar('\ue020', 'moum')">ㅏ</button>
-    <button onclick="addChar('\ue021', 'moum')">ㅐ</button>
-    <button onclick="addChar('\ue022', 'moum')">ㅑ</button>
-    <!-- ... -->
+    <button onclick="addChar('\ue020', 'jung')">ㅏ</button>
+    <button onclick="addChar('\ue021', 'jung')">ㅐ</button>
+    <button onclick="addChar('\ue022', 'jung')">ㅑ</button>
+    <!-- 나머지 모음 -->
   </div>
 
   <h3>받침</h3>
   <div class="keyboard" id="batchim">
-    <button onclick="addChar('\ue040', 'batchim')">ㄱ</button>
-    <button onclick="addChar('\ue041', 'batchim')">ㄲ</button>
-    <button onclick="addChar('\ue042', 'batchim')">ㄳ</button>
-    <!-- ... -->
+    <button onclick="addChar('\ue040', 'jong')">ㄱ</button>
+    <button onclick="addChar('\ue041', 'jong')">ㄲ</button>
+    <button onclick="addChar('\ue042', 'jong')">ㄳ</button>
+    <!-- 나머지 받침 -->
   </div>
 
   <div style="margin-top: 20px;">
@@ -95,67 +97,65 @@
     <button onclick="backspace()">← 지우기</button>
   </div>
 
-  <div id="output"></div>
+  <div id="output" contenteditable="false"></div>
 
   <script>
-    let syllableBuffer = [];
+    let syllableBuffer = { cho: '', jung: '', jong: '' };
+    let syllables = [];
 
     function addChar(char, type) {
-      syllableBuffer.push({ char, type });
+      syllableBuffer[type] = char;
       render();
     }
 
     function commitSyllable() {
-      if (syllableBuffer.length === 0) return;
-
-      const wrapper = document.createElement('div');
-      wrapper.className = 'syllable';
-
-      syllableBuffer.forEach(item => {
-        const span = document.createElement('span');
-        span.className = item.type;
-        span.innerText = item.char;
-        wrapper.appendChild(span);
-      });
-
-      document.getElementById('output').appendChild(wrapper);
-      syllableBuffer = [];
-    }
-
-    function backspace() {
-      if (syllableBuffer.length > 0) {
-        syllableBuffer.pop();
-      } else {
-        const output = document.getElementById('output');
-        output.removeChild(output.lastChild);
-      }
+      syllables.push({ ...syllableBuffer });
+      syllableBuffer = { cho: '', jung: '', jong: '' };
       render();
     }
 
-function render() {
-  const output = document.getElementById('output');
+    function backspace() {
+      if (syllableBuffer.jong) syllableBuffer.jong = '';
+      else if (syllableBuffer.jung) syllableBuffer.jung = '';
+      else if (syllableBuffer.cho) syllableBuffer.cho = '';
+      else syllables.pop();
+      render();
+    }
 
-  // 완성된 글자는 유지
-  const committed = Array.from(output.querySelectorAll('.syllable'));
-  output.innerHTML = '';
-  committed.forEach(node => output.appendChild(node));
+    function render() {
+      const output = document.getElementById('output');
+      output.innerHTML = '';
 
-  // 현재 입력 중인 버퍼 표시
-  if (syllableBuffer.length > 0) {
-    const preview = document.createElement('div');
-    preview.className = 'syllable';
+      for (const s of [...syllables, syllableBuffer]) {
+        if (!(s.cho || s.jung || s.jong)) continue;
 
-    syllableBuffer.forEach(item => {
-      const span = document.createElement('span');
-      span.className = item.type;
-      span.innerText = item.char;
-      preview.appendChild(span);
-    });
+        const div = document.createElement('div');
+        div.className = 'syllable';
 
-    output.appendChild(preview);
-  }
-}
+        if (s.jung) {
+          const jung = document.createElement('span');
+          jung.className = 'char jung';
+          jung.innerText = s.jung;
+          div.appendChild(jung);
+        }
 
+        if (s.cho) {
+          const cho = document.createElement('span');
+          cho.className = 'char cho';
+          cho.innerText = s.cho;
+          div.appendChild(cho);
+        }
+
+        if (s.jong) {
+          const jong = document.createElement('span');
+          jong.className = 'char jong';
+          jong.innerText = s.jong;
+          div.appendChild(jong);
+        }
+
+        output.appendChild(div);
+      }
+    }
   </script>
 </body>
 </html>
