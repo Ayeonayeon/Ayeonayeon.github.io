@@ -15,16 +15,11 @@
       line-height: 2;
     }
 
-    .keyboard {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    #nativeInput {
+      font-size: 24px;
       margin-bottom: 20px;
-    }
-
-    button {
-      padding: 10px 14px;
-      font-size: 18px;
+      width: 100%;
+      padding: 10px;
     }
 
     #output {
@@ -66,23 +61,23 @@
       top: 80%;
     }
 
-    #nativeInput {
-      font-size: 24px;
-      margin-bottom: 20px;
-      width: 100%;
-      padding: 10px;
+    .plain-char {
+      width: 70px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
 <body>
   <h1>PUA 한글 조합 입력기</h1>
 
-  <input type="text" id="nativeInput" placeholder="여기에 한글을 입력하세요" oninput="convertInput()">
+  <input type="text" id="nativeInput" placeholder="여기에 한글, 영어, 기호 등을 입력하세요" oninput="convertInput()">
 
   <div id="output" contenteditable="false"></div>
 
   <script>
-    // 예시: 실제로 사용하는 PUA 코드와 맞춰서 수정하세요
     const CHO_PUA = ['\ue000', '\ue001', '\ue002', '\ue003', '\ue004', '\ue005', '\ue006', '\ue007', '\ue008', '\ue009',
                      '\ue00A', '\ue00B', '\ue00C', '\ue00D', '\ue00E', '\ue00F', '\ue010', '\ue011', '\ue012'];
     const JUNG_PUA = ['\ue020', '\ue021', '\ue022', '\ue023', '\ue024', '\ue025', '\ue026', '\ue027', '\ue028', '\ue029',
@@ -100,6 +95,7 @@
       for (let ch of input) {
         const code = ch.charCodeAt(0);
         if (code >= 0xAC00 && code <= 0xD7A3) {
+          // 한글 음절 분해
           const offset = code - 0xAC00;
           const cho = Math.floor(offset / (21 * 28));
           const jung = Math.floor((offset % (21 * 28)) / 28);
@@ -110,6 +106,9 @@
             jung: JUNG_PUA[jung],
             jong: JONG_PUA[jong]
           });
+        } else {
+          // 비한글 문자는 그대로 저장
+          syllables.push({ raw: ch });
         }
       }
 
@@ -121,8 +120,16 @@
       output.innerHTML = '';
 
       for (const s of syllables) {
-        if (!(s.cho || s.jung || s.jong)) continue;
+        // 일반 문자 출력
+        if (s.raw) {
+          const div = document.createElement('div');
+          div.className = 'plain-char';
+          div.innerText = s.raw;
+          output.appendChild(div);
+          continue;
+        }
 
+        // 조합 문자 출력
         const div = document.createElement('div');
         div.className = 'syllable';
 
