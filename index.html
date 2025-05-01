@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUA 한글 조합 입력기1.4</title>
+  <title>PUA 한글 조합 입력기1.5</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -54,7 +54,7 @@
   transform: translate(-50%, -50%);
 }
 
-/* 모바일 화면일 경우 (최대 너비 768px 이하) */
+/* 모바일 화면일 경우 */
 @media (hover: none) and (pointer: coarse) {
   .syllable .cho {
     top: 50%;
@@ -80,7 +80,7 @@
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기1.4</h1>
+  <h1>PUA 한글 조합 입력기1.5</h1>
 
   <input type="text" id="nativeInput" placeholder="한글, 영어, 기호 등을 입력하세요" oninput="convertInput()">
 
@@ -169,15 +169,18 @@
 function toggleInput() {
   const input = document.getElementById('nativeInput');
   const btn = document.getElementById('toggleBtn');
-  
-  if (input.style.display === 'none') {
-    input.style.display = 'block';
+
+  if (input.style.opacity === '0') {
+    input.style.opacity = '1';
+    input.style.position = 'static';
     btn.innerText = '입력창 숨기기';
   } else {
-    input.style.display = 'none';
+    input.style.opacity = '0';
+    input.style.position = 'absolute';
     btn.innerText = '입력창 보이기';
   }
 }
+
 
 
     function convertInput() {
