@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUA 한글 조합 입력기1.3</title>
+  <title>PUA 한글 조합 입력기1.4</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -80,9 +80,13 @@
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기1.3</h1>
+  <h1>PUA 한글 조합 입력기1.4</h1>
 
   <input type="text" id="nativeInput" placeholder="한글, 영어, 기호 등을 입력하세요" oninput="convertInput()">
+
+  <!-- 입력창 토글 버튼 -->
+  <button onclick="toggleInput()" id="toggleBtn">입력창 숨기기</button>
+
 
   <!-- 복사 버튼 추가 -->
   <button onclick="copyForKakao()">카카오톡용 복사</button>
@@ -162,6 +166,18 @@
   });
 }
 
+function toggleInput() {
+  const input = document.getElementById('nativeInput');
+  const btn = document.getElementById('toggleBtn');
+  
+  if (input.style.display === 'none') {
+    input.style.display = 'block';
+    btn.innerText = '입력창 숨기기';
+  } else {
+    input.style.display = 'none';
+    btn.innerText = '입력창 보이기';
+  }
+}
 
 
     function convertInput() {
