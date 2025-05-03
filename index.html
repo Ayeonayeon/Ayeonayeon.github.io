@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>황도어 입력기2.1</title>
+  <title>황도어 입력기2.2</title>
   <style>
     @font-face {
       font-family: 'mememe3.1';
@@ -80,7 +80,7 @@
   </style>
 </head>
 <body>
-  <h1>황도어 입력기2.1</h1>
+  <h1>황도어 입력기2.2</h1>
 
   <input type="text" id="nativeInput" placeholder="한글, 영어, 기호 등을 입력하세요" oninput="convertInput()">
 
@@ -128,9 +128,14 @@
     let syllables = [];
 
     function insertEmoticon(char) {
-  syllables.push({ raw: char });
-  render();
+  // 입력창에도 추가
+  const input = document.getElementById('nativeInput');
+  input.value += char;
+
+  // 변환 트리거
+  convertInput();
 }
+
 
     function copyForKakao() {
   const MAX_COL = 10;
