@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>황도어 입력기2.0</title>
+  <title>황도어 입력기2.1</title>
   <style>
     @font-face {
       font-family: 'mememe3.1';
@@ -80,9 +80,17 @@
   </style>
 </head>
 <body>
-  <h1>황도어 입력기2.0</h1>
+  <h1>황도어 입력기2.1</h1>
 
   <input type="text" id="nativeInput" placeholder="한글, 영어, 기호 등을 입력하세요" oninput="convertInput()">
+
+  <!-- 이모티콘 버튼들 -->
+<div style="margin-bottom: 10px;">
+  <button onclick="insertEmoticon('\uE061')">❤️ 사랑</button>
+  <button onclick="insertEmoticon('\uE062')">😲 놀람</button>
+  <button onclick="insertEmoticon('\uE063')">... 말줄임</button>
+</div>
+
 
   <!-- 입력창 토글 버튼 -->
   <button onclick="toggleInput()" id="toggleBtn">입력창 숨기기</button>
@@ -118,6 +126,11 @@
     };
 
     let syllables = [];
+
+    function insertEmoticon(char) {
+  syllables.push({ raw: char });
+  render();
+}
 
     function copyForKakao() {
   const MAX_COL = 10;
