@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUA 한글 조합 입력기1.6</title>
+  <title>PUA 한글 조합 입력기1.7</title>
   <style>
     @font-face {
       font-family: 'mememe3';
@@ -80,7 +80,7 @@
   </style>
 </head>
 <body>
-  <h1>PUA 한글 조합 입력기1.6</h1>
+  <h1>PUA 한글 조합 입력기1.7</h1>
 
   <input type="text" id="nativeInput" placeholder="한글, 영어, 기호 등을 입력하세요" oninput="convertInput()">
 
@@ -121,7 +121,7 @@
 
     function copyForKakao() {
   const MAX_COL = 10;
-  const blank = '\uE090'; // 크기 맞는 PUA 빈 문자
+  const blank = '\u3164'; // 크기 맞는 빈 문자
   const blocks = [];
 
   let lines = [[], [], []];
